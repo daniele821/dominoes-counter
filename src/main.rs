@@ -58,7 +58,7 @@ mod tests {
     #[test]
     pub fn test_draw() {
         let actual = DominoArea::create_empty(3, 5).to_string();
-        let expected = "▀ ▀ ▀ ▀ ▀ \n▀ ▀ ▀ ▀ ▀ \n▀ ▀ ▀ ▀ ▀\n";
+        let expected = "▀ ▀ ▀ ▀ ▀ \n▀ ▀ ▀ ▀ ▀ \n▀ ▀ ▀ ▀ ▀ \n";
         assert_eq!(actual, expected);
     }
 }
