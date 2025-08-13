@@ -2,14 +2,14 @@
 
 use std::fmt::Display;
 
-const STR_BLOCK: &str = "██";
+const STR_BLOCK: &str = "  ";
 const COL_CLEAN: &str = "\x1b[0m";
-const COL_WHITE: &str = "\x1b[1;37m";
-const COL_RED: &str = "\x1b[31m";
-const COL_GREEN: &str = "\x1b[1;32m";
-const COL_YELLOW: &str = "\x1b[1;33m";
-const COL_BLUE: &str = "\x1b[1;34m";
-const COL_BLACK: &str = "\x1b[30m";
+const COL_WHITE: &str = "\x1b[1;47m";
+const COL_RED: &str = "\x1b[41m";
+const COL_GREEN: &str = "\x1b[1;42m";
+const COL_YELLOW: &str = "\x1b[1;43m";
+const COL_BLUE: &str = "\x1b[1;44m";
+const COL_BLACK: &str = "\x1b[40m";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum DominoColor {
