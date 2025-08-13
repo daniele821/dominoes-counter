@@ -2,12 +2,13 @@
 
 use std::fmt::Display;
 
-const STR_BLOCK: &str = "▀ ";
+const STR_BLOCK: &str = "██";
 const COL_CLEAN: &str = "\x1b[0m";
-const COL_RED: &str = "\x1b[1;31m";
-const COL_GREEN: &str = "\x1b[1;32m";
-const COL_YELLOW: &str = "\x1b[1;33m";
-const COL_BLUE: &str = "\x1b[1;34m";
+const COL_BACKGROUND: &str = "\x1b[37m";
+const COL_RED: &str = "\x1b[31m";
+const COL_GREEN: &str = "\x1b[32m";
+const COL_YELLOW: &str = "\x1b[33m";
+const COL_BLUE: &str = "\x1b[34m";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum DominoColor {
@@ -95,7 +96,7 @@ impl DominoArea {
 impl Display for DominoColor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            DominoColor::Empty => write!(f, "{}", STR_BLOCK),
+            DominoColor::Empty => write!(f, "{}{}{}", COL_BACKGROUND, STR_BLOCK, COL_CLEAN),
             DominoColor::Red => write!(f, "{}{}{}", COL_RED, STR_BLOCK, COL_CLEAN),
             DominoColor::Green => write!(f, "{}{}{}", COL_GREEN, STR_BLOCK, COL_CLEAN),
             DominoColor::Yellow => write!(f, "{}{}{}", COL_YELLOW, STR_BLOCK, COL_CLEAN),
