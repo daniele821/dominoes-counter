@@ -2,13 +2,13 @@
 
 use std::fmt::Display;
 
-const STR_BLOCK: &str = "  ";
+const STR_BLOCK: &str = "██";
 const COL_CLEAN: &str = "\x1b[0m";
-const COL_BACKGROUND: &str = "\x1b[47m";
-const COL_RED: &str = "\x1b[41m";
-const COL_GREEN: &str = "\x1b[42m";
-const COL_YELLOW: &str = "\x1b[43m";
-const COL_BLUE: &str = "\x1b[44m";
+const COL_BACKGROUND: &str = "\x1b[1;37m";
+const COL_RED: &str = "\x1b[31m";
+const COL_GREEN: &str = "\x1b[1;32m";
+const COL_YELLOW: &str = "\x1b[1;33m";
+const COL_BLUE: &str = "\x1b[1;34m";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum DominoColor {
@@ -122,13 +122,10 @@ fn main() {
     println!("{i}");
 
     let indexes = [
-        vec![0, 1, 2],
-        vec![3, 8, 13],
-        vec![4, 9],
-        vec![14],
-        vec![5, 6, 11],
-        vec![7],
-        vec![12],
+        vec![0, 5],
+        vec![1, 2],
+        vec![6, 7],
+        vec![3, 8, 10, 11, 12, 13],
     ];
 
     for index in &indexes {
