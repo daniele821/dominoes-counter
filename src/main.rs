@@ -12,7 +12,7 @@ const COL_GREEN: &str = "\x1b[1;32m";
 const COL_YELLOW: &str = "\x1b[1;33m";
 const COL_BLUE: &str = "\x1b[1;34m";
 
-#[derive(Debug, FromPrimitive)]
+#[derive(Debug, FromPrimitive, PartialEq, Eq)]
 enum DominoColor {
     Empty,
     Red,
@@ -53,7 +53,14 @@ impl DominoArea {
         self.get_cell_at_index(self.to_index(row, col))
     }
 
-    fn find_valid_color(&self, cell_pos: Vec<u64>) -> DominoColor {
+    fn find_valid_color(&self, cells: Vec<u64>) -> DominoColor {
+        for cell in cells {
+            let cell_content = self.get_cell_at_index(cell);
+            let row = self.row_from_index(cell);
+            let col = self.col_from_index(cell);
+            let empty = &DominoColor::Empty;
+            assert_eq!(cell_content, empty, "already colored cell ({row},{col})!");
+        }
         todo!("implement algorithm to find valid color!");
     }
 }
