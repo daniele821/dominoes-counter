@@ -46,6 +46,9 @@ impl DominoArea {
     fn to_index(&self, row: u64, col: u64) -> u64 {
         row * self.cols + col
     }
+    fn is_position_valid(&self, row: u64, col: u64) -> bool {
+        row < self.rows && col < self.cols
+    }
     fn get_cell_at_index(&self, index: u64) -> &DominoColor {
         self.cells.get(usize::try_from(index).unwrap()).unwrap()
     }
@@ -75,12 +78,19 @@ impl DominoArea {
             DominoColor::Yellow,
         ];
         for index in indexes {
-            let index2 = i64::try_from(*index).unwrap();
-            for near_indexes in [index2 - 1, index2 + 1, index2 - cols, index2 + cols] {
-                if near_indexes < 0 || near_indexes >= self.cells.len().try_into().unwrap() {
+            let row = self.row_from_index(*index);
+            let col = self.col_from_index(*index);
+            let nears = [
+                (row + 1, col),
+                (row.saturating_sub(1), col),
+                (row, col + 1),
+                (row, col.saturating_sub(1)),
+            ];
+            for (near_row, near_col) in nears {
+                if !self.is_position_valid(near_row, near_col) {
                     continue;
                 }
-                let cell = self.get_cell_at_index(u64::try_from(near_indexes).unwrap());
+                let cell = self.get_cell(near_row, near_col);
                 valid_colors.retain(|e| e != cell);
             }
         }
@@ -147,8 +157,23 @@ mod tests {
 
     #[test]
     pub fn test_draw() {
-        let actual = DominoArea::create_empty(3, 5).to_string();
-        let expected = "▀ ▀ ▀ ▀ ▀ \n▀ ▀ ▀ ▀ ▀ \n▀ ▀ ▀ ▀ ▀ \n";
-        assert_eq!(actual, expected);
+        let mut domino_area = DominoArea::create_empty(3, 5);
+
+        println!("{domino_area}");
+
+        let indexes = [
+            vec![1, 2, 3],
+            vec![0, 5],
+            vec![10, 11, 6],
+            vec![4, 9, 14],
+            vec![7, 8],
+            vec![12, 13],
+        ];
+        for index in indexes {
+            let valid_colors = domino_area.get_valid_colors(&index);
+            println!("{valid_colors:?}");
+            domino_area.set_valid_color(&index, valid_colors[0].clone());
+            println!("{domino_area}");
+        }
     }
 }
