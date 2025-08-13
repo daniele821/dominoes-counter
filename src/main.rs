@@ -1,6 +1,5 @@
 use std::fmt::Display;
 
-const STR_BLOCK: &str = "█";
 const STR_HALFBLOCK: &str = "▀";
 
 #[derive(Debug, Default)]
