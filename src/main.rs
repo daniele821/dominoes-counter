@@ -28,12 +28,6 @@ struct DominoArea {
     cells: Vec<DominoColor>,
 }
 
-#[derive(Debug)]
-struct CellPos {
-    row: u64,
-    col: u64,
-}
-
 impl DominoArea {
     fn create_empty(rows: u64, cols: u64) -> DominoArea {
         DominoArea {
@@ -43,7 +37,23 @@ impl DominoArea {
         }
     }
 
-    fn find_valid_color(&self, cell_pos: Vec<CellPos>) -> DominoColor {
+    fn row_from_index(&self, index: u64) -> u64 {
+        index / self.cols
+    }
+    fn col_from_index(&self, index: u64) -> u64 {
+        index % self.cols
+    }
+    fn to_index(&self, row: u64, col: u64) -> u64 {
+        row * self.cols + col
+    }
+    fn get_cell_at_index(&self, index: u64) -> &DominoColor {
+        self.cells.get(usize::try_from(index).unwrap()).unwrap()
+    }
+    fn get_cell(&self, row: u64, col: u64) -> &DominoColor {
+        self.get_cell_at_index(self.to_index(row, col))
+    }
+
+    fn find_valid_color(&self, cell_pos: Vec<u64>) -> DominoColor {
         todo!("implement algorithm to find valid color!");
     }
 }
@@ -64,8 +74,7 @@ impl Display for DominoArea {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for row in 0..self.rows {
             for col in 0..self.cols {
-                let index: usize = (row * self.cols + col).try_into().unwrap();
-                write!(f, "{}", self.cells[index].to_string())?;
+                write!(f, "{}", self.get_cell(row, col).to_string())?;
             }
             write!(f, "\n")?;
         }
@@ -75,7 +84,6 @@ impl Display for DominoArea {
 
 fn main() {
     let mut i = DominoArea::create_empty(3, 5);
-    let a: DominoColor = FromPrimitive::from_u8(12).unwrap();
     i.cells[3] = DominoColor::Red;
     i.cells[4] = DominoColor::Green;
     i.cells[7] = DominoColor::Yellow;
