@@ -19,10 +19,16 @@ impl DominoArea {
     }
 }
 
+impl Display for DominoCell {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        todo!()
+    }
+}
+
 impl Display for DominoArea {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for cell in &self.cells {
-            write!(f, "{:?}", cell)?;
+            write!(f, "{}", cell)?;
         }
         Ok(())
     }
@@ -30,4 +36,16 @@ impl Display for DominoArea {
 
 fn main() {
     println!("{}", DominoArea::create_empty(4, 5));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn test_draw() {
+        let actual = DominoArea::create_empty(3, 5).to_string();
+        let expected = "";
+        assert_eq!(actual, expected);
+    }
 }
