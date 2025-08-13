@@ -53,18 +53,17 @@ impl DominoArea {
         row < self.rows && col < self.cols
     }
     fn get_near_cells(&self, row: u64, col: u64) -> Vec<u64> {
-        let mut nears = vec![(row + 1, col), (row, col + 1)];
-        if row > 0 {
-            nears.push((row - 1, col));
-        }
-        if col > 0 {
-            nears.push((row, col - 1));
-        }
-        nears
-            .iter()
-            .filter(|(r, c)| self.is_position_valid(*r, *c))
-            .map(|(r, c)| self.to_index(*r, *c))
-            .collect()
+        vec![
+            (row + 1, col),
+            (row, col + 1),
+            (row.saturating_sub(1), col),
+            (row, col.saturating_sub(1)),
+        ]
+        .iter()
+        .filter(|(r, c)| *r != row || *c != col)
+        .filter(|(r, c)| self.is_position_valid(*r, *c))
+        .map(|(r, c)| self.to_index(*r, *c))
+        .collect()
     }
     fn get_cell_at_index(&self, index: u64) -> &DominoColor {
         self.cells.get(usize::try_from(index).unwrap()).unwrap()
@@ -155,11 +154,11 @@ mod tests {
     use super::*;
 
     #[test]
-    pub fn test_draw() {
+    pub fn test_draw_colors() {
         let mut domino_area = DominoArea::create_empty(3, 5);
         domino_area.cells[12] = DominoColor::Unused;
         domino_area.cells[13] = DominoColor::Unused;
-        println!("{domino_area}");
+        println!("\n{domino_area}");
 
         let indexes = [
             vec![1, 2, 3],
@@ -173,6 +172,29 @@ mod tests {
             println!("{valid_colors:?}");
             domino_area.set_valid_color(&index, valid_colors[0].clone());
             println!("{domino_area}");
+        }
+    }
+
+    #[test]
+    pub fn test_utils() {
+        let mut domino_area = DominoArea::create_empty(5, 4);
+
+        assert!(domino_area.is_position_valid(4, 3));
+        assert!(domino_area.is_position_valid(0, 0));
+        assert!(!domino_area.is_position_valid(5, 3));
+        assert!(!domino_area.is_position_valid(1, 4));
+
+        let near_tests = [
+            (vec![1, 4], (0, 0)),
+            (vec![1, 4, 6, 9], (1, 1)),
+            (vec![7, 10, 15], (2, 3)),
+            (vec![13, 16, 18], (4, 1)),
+            (vec![15, 18], (4, 3)),
+        ];
+        for (expected, cell) in near_tests {
+            let mut actual = domino_area.get_near_cells(cell.0, cell.1);
+            actual.sort();
+            assert_eq!(expected, actual);
         }
     }
 }
