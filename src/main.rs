@@ -130,26 +130,7 @@ impl Display for DominoArea {
     }
 }
 
-fn main() {
-    let mut i = DominoArea::create_empty(3, 5);
-    i.cells[4] = DominoColor::Unused;
-    i.cells[9] = DominoColor::Unused;
-    i.cells[14] = DominoColor::Unused;
-    println!("{i}");
-
-    let indexes = [
-        vec![0, 5],
-        vec![1, 2],
-        vec![6, 7],
-        vec![3, 8, 10, 11, 12, 13],
-    ];
-
-    for index in &indexes {
-        let colors = i.get_valid_colors(index);
-        i.set_valid_color(index, colors[0].clone());
-        println!("{i}");
-    }
-}
+fn main() {}
 
 #[cfg(test)]
 mod tests {
@@ -158,7 +139,8 @@ mod tests {
     #[test]
     pub fn test_draw() {
         let mut domino_area = DominoArea::create_empty(3, 5);
-
+        domino_area.cells[12] = DominoColor::Unused;
+        domino_area.cells[13] = DominoColor::Unused;
         println!("{domino_area}");
 
         let indexes = [
@@ -167,7 +149,6 @@ mod tests {
             vec![10, 11, 6],
             vec![4, 9, 14],
             vec![7, 8],
-            vec![12, 13],
         ];
         for index in indexes {
             let valid_colors = domino_area.get_valid_colors(&index);
