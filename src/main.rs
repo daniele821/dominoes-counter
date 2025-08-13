@@ -3,7 +3,7 @@
 use std::fmt::Display;
 
 const STR_BLOCK: &str = "  ";
-const STR_BLOCK_HIGHLIGHT: &str = "\x1b[1;37m✪ ";
+const STR_BLOCK_HIGHLIGHT: &str = "\x1b[1;30m✪ ";
 const COL_CLEAN: &str = "\x1b[0m";
 const COL_WHITE: &str = "\x1b[1;47m";
 const COL_RED: &str = "\x1b[1;41m";
