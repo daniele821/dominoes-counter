@@ -86,7 +86,6 @@ impl DominoArea {
             let empty = &DominoColor::Empty;
             assert_eq!(cell, empty, "already colored cell ({row},{col})!");
         }
-        let cols = i64::try_from(self.cols).unwrap();
         let mut valid_colors = vec![
             DominoColor::Blue,
             DominoColor::Red,
@@ -96,13 +95,7 @@ impl DominoArea {
         for index in indexes {
             let row = self.row_from_index(*index);
             let col = self.col_from_index(*index);
-            let nears = [
-                (row + 1, col),
-                (row.saturating_sub(1), col),
-                (row, col + 1),
-                (row, col.saturating_sub(1)),
-            ];
-            for (near_index) in self.get_near_cells(row, col) {
+            for near_index in self.get_near_cells(row, col) {
                 let near_row = self.row_from_index(near_index);
                 let near_col = self.col_from_index(near_index);
                 if !self.is_position_valid(near_row, near_col) {
@@ -147,7 +140,21 @@ impl Display for DominoArea {
     }
 }
 
-fn main() {}
+fn main() {
+    let mut domino_area = DominoArea::create_empty(3, 5);
+    domino_area.cells[4] = DominoColor::Unused;
+    domino_area.cells[9] = DominoColor::Unused;
+    domino_area.cells[14] = DominoColor::Unused;
+    println!("\n{domino_area}");
+
+    let indexes = [[1, 2], [0, 5], [10, 11], [6, 7], [12, 13], [3, 8]];
+    for index in indexes {
+        let valid_colors = domino_area.get_valid_colors(&index);
+        println!("{valid_colors:?}");
+        domino_area.set_valid_color(&index, valid_colors[0].clone());
+        println!("{domino_area}");
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -177,7 +184,7 @@ mod tests {
 
     #[test]
     pub fn test_utils() {
-        let mut domino_area = DominoArea::create_empty(5, 4);
+        let domino_area = DominoArea::create_empty(5, 4);
 
         assert!(domino_area.is_position_valid(4, 3));
         assert!(domino_area.is_position_valid(0, 0));
