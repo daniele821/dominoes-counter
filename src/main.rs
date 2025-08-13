@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use std::fmt::Display;
 
 const STR_BLOCK: &str = "▀ ";
@@ -8,7 +10,7 @@ const COL_YELLOW: &str = "\x1b[1;33m";
 const COL_BLUE: &str = "\x1b[1;34m";
 
 #[derive(Debug, Default)]
-enum DominoCell {
+enum DominoColor {
     #[default]
     Empty,
     Color1,
@@ -21,7 +23,13 @@ enum DominoCell {
 struct DominoArea {
     rows: u64,
     cols: u64,
-    cells: Vec<DominoCell>,
+    cells: Vec<DominoColor>,
+}
+
+#[derive(Debug)]
+struct CellPos {
+    row: u64,
+    col: u64,
 }
 
 impl DominoArea {
@@ -29,19 +37,23 @@ impl DominoArea {
         DominoArea {
             rows,
             cols,
-            cells: (0..rows * cols).map(|_| DominoCell::Empty).collect(),
+            cells: (0..rows * cols).map(|_| DominoColor::Empty).collect(),
         }
+    }
+
+    fn find_valid_color(&self, cell_pos: Vec<CellPos>) -> DominoColor {
+        todo!("implement algorithm to find valid color!");
     }
 }
 
-impl Display for DominoCell {
+impl Display for DominoColor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            DominoCell::Empty => write!(f, "{}", STR_BLOCK),
-            DominoCell::Color1 => write!(f, "{}{}{}", COL_RED, STR_BLOCK, COL_CLEAN),
-            DominoCell::Color2 => write!(f, "{}{}{}", COL_GREEN, STR_BLOCK, COL_CLEAN),
-            DominoCell::Color3 => write!(f, "{}{}{}", COL_YELLOW, STR_BLOCK, COL_CLEAN),
-            DominoCell::Color4 => write!(f, "{}{}{}", COL_BLUE, STR_BLOCK, COL_CLEAN),
+            DominoColor::Empty => write!(f, "{}", STR_BLOCK),
+            DominoColor::Color1 => write!(f, "{}{}{}", COL_RED, STR_BLOCK, COL_CLEAN),
+            DominoColor::Color2 => write!(f, "{}{}{}", COL_GREEN, STR_BLOCK, COL_CLEAN),
+            DominoColor::Color3 => write!(f, "{}{}{}", COL_YELLOW, STR_BLOCK, COL_CLEAN),
+            DominoColor::Color4 => write!(f, "{}{}{}", COL_BLUE, STR_BLOCK, COL_CLEAN),
         }
     }
 }
@@ -61,10 +73,10 @@ impl Display for DominoArea {
 
 fn main() {
     let mut i = DominoArea::create_empty(3, 5);
-    i.cells[3] = DominoCell::Color4;
-    i.cells[4] = DominoCell::Color3;
-    i.cells[7] = DominoCell::Color2;
-    i.cells[8] = DominoCell::Color1;
+    i.cells[3] = DominoColor::Color4;
+    i.cells[4] = DominoColor::Color3;
+    i.cells[7] = DominoColor::Color2;
+    i.cells[8] = DominoColor::Color1;
     println!("{i}");
 }
 
