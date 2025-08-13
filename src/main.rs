@@ -60,14 +60,16 @@ impl DominoArea {
     }
 
     fn set_to_valid_color(&self, indexes: Vec<u64>) {
-        for index in indexes {
-            let cell = self.get_cell_at_index(index);
-            let row = self.row_from_index(index);
-            let col = self.col_from_index(index);
+        for index in &indexes {
+            let cell = self.get_cell_at_index(*index);
+            let row = self.row_from_index(*index);
+            let col = self.col_from_index(*index);
             let empty = &DominoColor::Empty;
             assert_eq!(cell, empty, "already colored cell ({row},{col})!");
         }
-        todo!("implement algorithm to find valid color!");
+        for index in &indexes {
+            todo!("implement algorithm to find valid color!");
+        }
     }
 }
 
