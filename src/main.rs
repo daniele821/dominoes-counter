@@ -9,7 +9,7 @@ const COL_RED: &str = "\x1b[31m";
 const COL_GREEN: &str = "\x1b[1;32m";
 const COL_YELLOW: &str = "\x1b[1;33m";
 const COL_BLUE: &str = "\x1b[1;34m";
-const COL_BLACK: &str = "\x1b[1;30m";
+const COL_BLACK: &str = "\x1b[30m";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum DominoColor {
