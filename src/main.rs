@@ -2,6 +2,9 @@
 
 use std::fmt::Display;
 
+use num_derive::FromPrimitive;
+use num_traits::FromPrimitive;
+
 const STR_BLOCK: &str = "▀ ";
 const COL_CLEAN: &str = "\x1b[0m";
 const COL_RED: &str = "\x1b[1;31m";
@@ -9,14 +12,13 @@ const COL_GREEN: &str = "\x1b[1;32m";
 const COL_YELLOW: &str = "\x1b[1;33m";
 const COL_BLUE: &str = "\x1b[1;34m";
 
-#[derive(Debug, Default)]
+#[derive(Debug, FromPrimitive)]
 enum DominoColor {
-    #[default]
     Empty,
-    Color1,
-    Color2,
-    Color3,
-    Color4,
+    Red,
+    Green,
+    Yellow,
+    Blue,
 }
 
 #[derive(Debug)]
@@ -50,10 +52,10 @@ impl Display for DominoColor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             DominoColor::Empty => write!(f, "{}", STR_BLOCK),
-            DominoColor::Color1 => write!(f, "{}{}{}", COL_RED, STR_BLOCK, COL_CLEAN),
-            DominoColor::Color2 => write!(f, "{}{}{}", COL_GREEN, STR_BLOCK, COL_CLEAN),
-            DominoColor::Color3 => write!(f, "{}{}{}", COL_YELLOW, STR_BLOCK, COL_CLEAN),
-            DominoColor::Color4 => write!(f, "{}{}{}", COL_BLUE, STR_BLOCK, COL_CLEAN),
+            DominoColor::Red => write!(f, "{}{}{}", COL_RED, STR_BLOCK, COL_CLEAN),
+            DominoColor::Green => write!(f, "{}{}{}", COL_GREEN, STR_BLOCK, COL_CLEAN),
+            DominoColor::Yellow => write!(f, "{}{}{}", COL_YELLOW, STR_BLOCK, COL_CLEAN),
+            DominoColor::Blue => write!(f, "{}{}{}", COL_BLUE, STR_BLOCK, COL_CLEAN),
         }
     }
 }
@@ -73,10 +75,11 @@ impl Display for DominoArea {
 
 fn main() {
     let mut i = DominoArea::create_empty(3, 5);
-    i.cells[3] = DominoColor::Color4;
-    i.cells[4] = DominoColor::Color3;
-    i.cells[7] = DominoColor::Color2;
-    i.cells[8] = DominoColor::Color1;
+    let a: DominoColor = FromPrimitive::from_u8(12).unwrap();
+    i.cells[3] = DominoColor::Red;
+    i.cells[4] = DominoColor::Green;
+    i.cells[7] = DominoColor::Yellow;
+    i.cells[8] = DominoColor::Blue;
     println!("{i}");
 }
 
