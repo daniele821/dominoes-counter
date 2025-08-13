@@ -52,14 +52,20 @@ impl DominoArea {
     fn get_cell(&self, row: u64, col: u64) -> &DominoColor {
         self.get_cell_at_index(self.to_index(row, col))
     }
+    fn get_cell_at_index_mut(&mut self, index: u64) -> &mut DominoColor {
+        self.cells.get_mut(usize::try_from(index).unwrap()).unwrap()
+    }
+    fn get_cell_mut(&mut self, row: u64, col: u64) -> &mut DominoColor {
+        self.get_cell_at_index_mut(self.to_index(row, col))
+    }
 
-    fn find_valid_color(&self, cells: Vec<u64>) -> DominoColor {
-        for cell in cells {
-            let cell_content = self.get_cell_at_index(cell);
-            let row = self.row_from_index(cell);
-            let col = self.col_from_index(cell);
+    fn set_to_valid_color(&self, indexes: Vec<u64>) {
+        for index in indexes {
+            let cell = self.get_cell_at_index(index);
+            let row = self.row_from_index(index);
+            let col = self.col_from_index(index);
             let empty = &DominoColor::Empty;
-            assert_eq!(cell_content, empty, "already colored cell ({row},{col})!");
+            assert_eq!(cell, empty, "already colored cell ({row},{col})!");
         }
         todo!("implement algorithm to find valid color!");
     }
