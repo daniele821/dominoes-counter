@@ -52,6 +52,20 @@ impl DominoArea {
     fn is_position_valid(&self, row: u64, col: u64) -> bool {
         row < self.rows && col < self.cols
     }
+    fn get_near_cells(&self, row: u64, col: u64) -> Vec<u64> {
+        let mut nears = vec![(row + 1, col), (row, col + 1)];
+        if row > 0 {
+            nears.push((row - 1, col));
+        }
+        if col > 0 {
+            nears.push((row, col - 1));
+        }
+        nears
+            .iter()
+            .filter(|(r, c)| self.is_position_valid(*r, *c))
+            .map(|(r, c)| self.to_index(*r, *c))
+            .collect()
+    }
     fn get_cell_at_index(&self, index: u64) -> &DominoColor {
         self.cells.get(usize::try_from(index).unwrap()).unwrap()
     }
@@ -89,7 +103,9 @@ impl DominoArea {
                 (row, col + 1),
                 (row, col.saturating_sub(1)),
             ];
-            for (near_row, near_col) in nears {
+            for (near_index) in self.get_near_cells(row, col) {
+                let near_row = self.row_from_index(near_index);
+                let near_col = self.col_from_index(near_index);
                 if !self.is_position_valid(near_row, near_col) {
                     continue;
                 }
