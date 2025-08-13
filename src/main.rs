@@ -2,9 +2,6 @@
 
 use std::fmt::Display;
 
-use num_derive::FromPrimitive;
-use num_traits::FromPrimitive;
-
 const STR_BLOCK: &str = "▀ ";
 const COL_CLEAN: &str = "\x1b[0m";
 const COL_RED: &str = "\x1b[1;31m";
@@ -12,7 +9,7 @@ const COL_GREEN: &str = "\x1b[1;32m";
 const COL_YELLOW: &str = "\x1b[1;33m";
 const COL_BLUE: &str = "\x1b[1;34m";
 
-#[derive(Debug, FromPrimitive, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum DominoColor {
     Empty,
     Red,
@@ -59,16 +56,38 @@ impl DominoArea {
         self.get_cell_at_index_mut(self.to_index(row, col))
     }
 
-    fn set_to_valid_color(&self, indexes: Vec<u64>) {
-        for index in &indexes {
+    fn get_valid_colors(&self, indexes: &[u64]) -> Vec<DominoColor> {
+        for index in indexes {
             let cell = self.get_cell_at_index(*index);
             let row = self.row_from_index(*index);
             let col = self.col_from_index(*index);
             let empty = &DominoColor::Empty;
             assert_eq!(cell, empty, "already colored cell ({row},{col})!");
         }
-        for index in &indexes {
-            todo!("implement algorithm to find valid color!");
+        let cols = i64::try_from(self.cols).unwrap();
+        let mut valid_colors = vec![
+            DominoColor::Blue,
+            DominoColor::Red,
+            DominoColor::Green,
+            DominoColor::Yellow,
+        ];
+        for index in indexes {
+            let index2 = i64::try_from(*index).unwrap();
+            for near_indexes in [index2 - 1, index2 + 1, index2 - cols, index2 + cols] {
+                if near_indexes < 0 || near_indexes >= self.cells.len().try_into().unwrap() {
+                    continue;
+                }
+                let cell = self.get_cell_at_index(u64::try_from(near_indexes).unwrap());
+                valid_colors.retain(|e| e != cell);
+            }
+        }
+        valid_colors
+    }
+
+    fn set_valid_color(&mut self, indexes: &[u64], color: DominoColor) {
+        for index in indexes {
+            let cell = self.get_cell_at_index_mut(*index);
+            *cell = color.clone();
         }
     }
 }
@@ -99,11 +118,23 @@ impl Display for DominoArea {
 
 fn main() {
     let mut i = DominoArea::create_empty(3, 5);
-    i.cells[3] = DominoColor::Red;
-    i.cells[4] = DominoColor::Green;
-    i.cells[7] = DominoColor::Yellow;
-    i.cells[8] = DominoColor::Blue;
     println!("{i}");
+
+    let indexes = [
+        vec![0, 1, 2],
+        vec![3, 8, 13],
+        vec![4, 9],
+        vec![14],
+        vec![5, 6, 11],
+        vec![7],
+        vec![12],
+    ];
+
+    for index in &indexes {
+        let colors = i.get_valid_colors(index);
+        i.set_valid_color(index, colors[0].clone());
+        println!("{i}");
+    }
 }
 
 #[cfg(test)]
