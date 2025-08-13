@@ -3,13 +3,14 @@
 use std::fmt::Display;
 
 const STR_BLOCK: &str = "  ";
+const STR_BLOCK_HIGHLIGHT: &str = "\x1b[1;30moo";
 const COL_CLEAN: &str = "\x1b[0m";
 const COL_WHITE: &str = "\x1b[1;47m";
-const COL_RED: &str = "\x1b[41m";
+const COL_RED: &str = "\x1b[1;41m";
 const COL_GREEN: &str = "\x1b[1;42m";
 const COL_YELLOW: &str = "\x1b[1;43m";
 const COL_BLUE: &str = "\x1b[1;44m";
-const COL_BLACK: &str = "\x1b[40m";
+const COL_BLACK: &str = "\x1b[1;40m";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum DominoColor {
@@ -26,6 +27,7 @@ struct DominoArea {
     rows: u64,
     cols: u64,
     cells: Vec<DominoColor>,
+    highlight: Vec<u64>,
 }
 
 impl DominoArea {
@@ -34,6 +36,7 @@ impl DominoArea {
             rows,
             cols,
             cells: (0..rows * cols).map(|_| DominoColor::Empty).collect(),
+            highlight: vec![],
         }
     }
 
@@ -102,19 +105,7 @@ impl DominoArea {
             let cell = self.get_cell_at_index_mut(*index);
             *cell = color.clone();
         }
-    }
-}
-
-impl Display for DominoColor {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            DominoColor::Empty => write!(f, "{}{}{}", COL_WHITE, STR_BLOCK, COL_CLEAN),
-            DominoColor::Red => write!(f, "{}{}{}", COL_RED, STR_BLOCK, COL_CLEAN),
-            DominoColor::Green => write!(f, "{}{}{}", COL_GREEN, STR_BLOCK, COL_CLEAN),
-            DominoColor::Yellow => write!(f, "{}{}{}", COL_YELLOW, STR_BLOCK, COL_CLEAN),
-            DominoColor::Blue => write!(f, "{}{}{}", COL_BLUE, STR_BLOCK, COL_CLEAN),
-            DominoColor::Unused => write!(f, "{}{}{}", COL_BLACK, STR_BLOCK, COL_CLEAN),
-        }
+        self.highlight = indexes.to_vec();
     }
 }
 
@@ -122,7 +113,18 @@ impl Display for DominoArea {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for row in 0..self.rows {
             for col in 0..self.cols {
-                write!(f, "{}", self.get_cell(row, col).to_string())?;
+                let mut block = STR_BLOCK;
+                if self.highlight.contains(&self.to_index(row, col)) {
+                    block = STR_BLOCK_HIGHLIGHT;
+                }
+                match self.get_cell(row, col) {
+                    DominoColor::Empty => write!(f, "{}{}{}", COL_WHITE, block, COL_CLEAN)?,
+                    DominoColor::Red => write!(f, "{}{}{}", COL_RED, block, COL_CLEAN)?,
+                    DominoColor::Green => write!(f, "{}{}{}", COL_GREEN, block, COL_CLEAN)?,
+                    DominoColor::Yellow => write!(f, "{}{}{}", COL_YELLOW, block, COL_CLEAN)?,
+                    DominoColor::Blue => write!(f, "{}{}{}", COL_BLUE, block, COL_CLEAN)?,
+                    DominoColor::Unused => write!(f, "{}{}{}", COL_BLACK, block, COL_CLEAN)?,
+                }
             }
             write!(f, "\n")?;
         }
