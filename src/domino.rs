@@ -122,6 +122,10 @@ impl DominoArea {
     pub fn compute_empty_nears(&self) -> Vec<u64> {
         let mut result = Vec::<u64>::with_capacity(self.cells.len());
         for index in 0..self.cells.len() {
+            if *self.get_cell_at_index(u64::try_from(index).unwrap()) != DominoColor::Empty {
+                result.push(0);
+                continue;
+            }
             let row = self.row_from_index(u64::try_from(index).unwrap());
             let col = self.col_from_index(u64::try_from(index).unwrap());
             let empty_nears = self
@@ -210,10 +214,25 @@ mod tests {
 
     #[test]
     pub fn test_empty_nears() {
-        let domino_area = DominoArea::create_empty(3, 3);
+        let mut domino_area = DominoArea::create_empty(3, 3);
 
-        let expected = vec![2, 3, 2, 3, 4, 3, 2, 3, 2];
-        let actual = domino_area.compute_empty_nears();
-        assert_eq!(expected, actual);
+        let tests = [
+            (vec![2, 3, 2, 3, 4, 3, 2, 3, 2], vec![0, 1]),
+            (vec![0, 0, 1, 2, 3, 3, 2, 3, 2], vec![2, 5]),
+            (vec![0, 0, 0, 2, 2, 0, 2, 3, 1], vec![7, 8]),
+            (vec![0, 0, 0, 2, 1, 0, 1, 0, 0], vec![3, 6]),
+            (vec![0, 0, 0, 0, 0, 0, 0, 0, 0], vec![4]),
+            (vec![0, 0, 0, 0, 0, 0, 0, 0, 0], vec![]),
+        ];
+
+        for test in tests {
+            let expected = test.0;
+            let actual = domino_area.compute_empty_nears();
+            assert_eq!(expected, actual);
+            println!("{actual:?}");
+            println!("{domino_area}");
+            let colors = domino_area.get_valid_colors(&test.1);
+            domino_area.set_valid_color(&test.1, colors[0].clone());
+        }
     }
 }
