@@ -1,13 +1,13 @@
 const STR_BLOCK: &str = "  ";
 const STR_BLOCK_HIGHLIGHT: &str = "✪ ";
-const COL_TEXT: &str = "\x1b[1;30m";
+const COL_TEXT: &str = "\x1b[30m";
 const COL_CLEAN: &str = "\x1b[0m";
-const COL_WHITE: &str = "\x1b[1;47m";
-const COL_RED: &str = "\x1b[1;41m";
-const COL_GREEN: &str = "\x1b[1;42m";
-const COL_YELLOW: &str = "\x1b[1;43m";
-const COL_BLUE: &str = "\x1b[1;44m";
-const COL_BLACK: &str = "\x1b[1;40m";
+const COL_WHITE: &str = "\x1b[47m";
+const COL_RED: &str = "\x1b[41m";
+const COL_GREEN: &str = "\x1b[42m";
+const COL_YELLOW: &str = "\x1b[43m";
+const COL_BLUE: &str = "\x1b[44m";
+const COL_BLACK: &str = "\x1b[40m";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DominoColor {
@@ -210,11 +210,15 @@ mod tests {
     pub fn test_empty_nears() {
         let mut domino_area = DominoArea::create_empty(3, 4);
         *domino_area.get_cell_mut(0, 3) = DominoColor::Unused;
-        *domino_area.get_cell_mut(2, 3) = DominoColor::Unused;
+        *domino_area.get_cell_mut(1, 3) = DominoColor::Unused;
         println!("\n{}", domino_area.custom_fmt(&[], &[]));
 
         let tests = [
-            (vec![1, 2, 1, 2, 2, 3, 4, 1, 2, 3, 2, 2], vec![0,1])
+            (vec![1, 2, 1, 1, 2, 3, 3, 2, 2, 3, 3, 1], vec![0, 1]),
+            (vec![1, 1, 0, 0, 2, 2, 2, 1, 2, 3, 2, 1], vec![2, 6]),
+            (vec![0, 1, 0, 0, 1, 1, 2, 1, 1, 2, 2, 1], vec![4, 8]),
+            (vec![0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0], vec![10, 11]),
+            (vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], vec![5, 9]),
         ];
 
         for test in tests {
