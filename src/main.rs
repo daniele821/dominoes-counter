@@ -78,6 +78,10 @@ impl DominoArea {
         self.get_cell_at_index_mut(self.to_index(row, col))
     }
 
+    fn get_highlight_mut(&mut self) -> &mut Vec<u64> {
+        &mut self.highlight
+    }
+
     fn get_valid_colors(&self, indexes: &[u64]) -> Vec<DominoColor> {
         for index in indexes {
             let cell = self.get_cell_at_index(*index);
@@ -113,7 +117,6 @@ impl DominoArea {
             let cell = self.get_cell_at_index_mut(*index);
             *cell = color.clone();
         }
-        self.highlight = indexes.to_vec();
     }
 }
 
@@ -151,6 +154,7 @@ fn main() {
     for index in indexes {
         let valid_colors = domino_area.get_valid_colors(&index);
         println!("{valid_colors:?}");
+        *domino_area.get_highlight_mut() = index.to_vec();
         domino_area.set_valid_color(&index, valid_colors[0].clone());
         println!("{domino_area}");
     }
@@ -177,6 +181,7 @@ mod tests {
         for index in indexes {
             let valid_colors = domino_area.get_valid_colors(&index);
             println!("{valid_colors:?}");
+            *domino_area.get_highlight_mut() = index.clone();
             domino_area.set_valid_color(&index, valid_colors[0].clone());
             println!("{domino_area}");
         }
