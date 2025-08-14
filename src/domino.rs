@@ -77,13 +77,6 @@ impl DominoArea {
     }
 
     pub fn get_valid_colors(&self, indexes: &[u64]) -> Vec<DominoColor> {
-        for index in indexes {
-            let cell = self.get_cell_at_index(*index);
-            let row = self.row_from_index(*index);
-            let col = self.col_from_index(*index);
-            let empty = &DominoColor::Empty;
-            assert_eq!(cell, empty, "already colored cell ({row},{col})!");
-        }
         let mut valid_colors = vec![
             DominoColor::Blue,
             DominoColor::Red,
