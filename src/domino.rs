@@ -52,6 +52,7 @@ impl DominoArea {
         row < self.rows && col < self.cols
     }
     pub fn get_near_cells(&self, row: u64, col: u64) -> Vec<u64> {
+        assert!(self.is_position_valid(row, col));
         vec![
             (row + 1, col),
             (row, col + 1),
@@ -116,6 +117,21 @@ impl DominoArea {
             let cell = self.get_cell_at_index_mut(*index);
             *cell = color.clone();
         }
+    }
+
+    pub fn compute_empty_nears(&self) -> Vec<u64> {
+        let mut result = Vec::<u64>::with_capacity(self.cells.len());
+        for index in 0..self.cells.len() {
+            let row = self.row_from_index(u64::try_from(index).unwrap());
+            let col = self.col_from_index(u64::try_from(index).unwrap());
+            let empty_nears = self
+                .get_near_cells(row, col)
+                .iter()
+                .filter(|i| *self.get_cell_at_index(**i) == DominoColor::Empty)
+                .count();
+            result.push(u64::try_from(empty_nears).unwrap());
+        }
+        result
     }
 }
 
@@ -190,5 +206,14 @@ mod tests {
             actual.sort();
             assert_eq!(expected, actual);
         }
+    }
+
+    #[test]
+    pub fn test_empty_nears() {
+        let domino_area = DominoArea::create_empty(3, 3);
+
+        let expected = vec![2, 3, 2, 3, 4, 3, 2, 3, 2];
+        let actual = domino_area.compute_empty_nears();
+        assert_eq!(expected, actual);
     }
 }
